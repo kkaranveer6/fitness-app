@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
+import { useSelector } from "react-redux";
 
 import { exerciseOptions, fetchData, youtubeOptions } from "../utils/fetchData";
 import Detail from "../components/Detail";
@@ -31,7 +32,7 @@ const ExerciseDetail = () => {
         `${youtubeSearchUrl}/search?query=${exerciseDetailData.name} exercise`,
         youtubeOptions
       );
-      setExerciseVideos(exerciseVideosData.contents);
+      setExerciseVideos(exerciseVideosData.contents || []);
 
       const targetMuscleExercisesData = await fetchData(
         `${import.meta.env.VITE_API_URL}/exercises/target/${

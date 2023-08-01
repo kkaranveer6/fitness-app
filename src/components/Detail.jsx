@@ -1,12 +1,32 @@
-import React from "react";
-import { Typography, Stack, Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Typography, Stack, Button, IconButton } from "@mui/material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import BodyPartImage from "../assets/icons/body-part.png";
 import TargetImage from "../assets/icons/target.png";
 import EquipmentImage from "../assets/icons/equipment.png";
+import { getExercises } from "../utils/firebase";
 
 const Detail = ({ exerciseDetail }) => {
   const { bodyPart, gifUrl, name, target, equipment } = exerciseDetail;
+  const [isLiked, setIsLiked] = useState(false);
+
+  const [newExercises, setNewExercises] = useState([]);
+  const exercises = useSelector((state) => state.exercise.liked);
+
+  useEffect(() => {
+    exercises.map((exercise) => {
+      if (exercise.name === name) {
+        setIsLiked(true);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log("exercises", newExercises);
+  }, [newExercises]);
 
   const extraDetail = [
     {
@@ -23,6 +43,11 @@ const Detail = ({ exerciseDetail }) => {
     },
   ];
 
+  const handleAddExercise = async () => {
+    // dispatch add exercise to liked list redux method
+    setNewExercises(await getExercises());
+  };
+
   return (
     <Stack
       gap="60px"
@@ -30,13 +55,22 @@ const Detail = ({ exerciseDetail }) => {
     >
       <img src={gifUrl} alt={name} loading="lazy" className="detail-image" />
       <Stack sx={{ gap: { lg: "35px", xs: "20px" } }}>
-        <Typography
-          sx={{ fontSize: { lg: "64px", xs: "30px" } }}
-          fontWeight={700}
-          textTransform="capitalize"
-        >
-          {name}
-        </Typography>
+        <Stack direction="row" gap={2} sx={{ width: "100%" }}>
+          <Typography
+            sx={{ fontSize: { lg: "64px", xs: "30px" } }}
+            fontWeight={700}
+            textTransform="capitalize"
+          >
+            {name}
+          </Typography>
+          <IconButton
+            size="large"
+            sx={{ height: "2em", width: "2em", alignSelf: "center" }}
+            onClick={handleAddExercise}
+          >
+            {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          </IconButton>
+        </Stack>
         <Typography
           sx={{ fontSize: { lg: "24px", xs: "18px" } }}
           color="#4F4C4C"
