@@ -1,9 +1,22 @@
 import { useSelector } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
+
 import { Box, Stack, Typography } from "@mui/material";
 import ExerciseCard from "./ExerciseCard";
+import { auth } from "../utils/firebase";
 
 const LikedExercises = () => {
   const exercises = useSelector((state) => state.exercise.liked);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user.uid);
+      } else {
+        console.log("not logged in");
+      }
+    });
+  }, []);
 
   return (
     <>
