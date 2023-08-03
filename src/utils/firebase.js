@@ -38,7 +38,7 @@ export const getExercises = async () => {
 };
 
 const addExercise = ({ id, bodyPart, gifUrl, name, target, equipment }) => {
-  db.collection("cities").doc(id).set({
+  db.collection("exercises").doc(id).set({
     bodyPart,
     gifUrl,
     name,

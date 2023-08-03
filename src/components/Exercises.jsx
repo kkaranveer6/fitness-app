@@ -12,21 +12,32 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
 
   useEffect(() => {
     const fetchExercisesData = async () => {
-      let exercisesData = [];
+      try {
+        let exercisesData = [];
 
-      if (bodyPart === "all") {
-        exercisesData = await fetchData(
-          `${import.meta.env.VITE_API_URL}/exercises`,
-          exerciseOptions
-        );
-      } else {
-        exercisesData = await fetchData(
-          `${import.meta.env.VITE_API_URL}/exercises/bodyPart/${bodyPart}`,
-          exerciseOptions
-        );
+        if (bodyPart === "all") {
+          exercisesData = await fetchData(
+            `${import.meta.env.VITE_API_URL}/exercises`,
+            exerciseOptions
+          );
+        } else {
+          exercisesData = await fetchData(
+            `${import.meta.env.VITE_API_URL}/exercises/bodyPart/${bodyPart}`,
+            exerciseOptions
+          );
+        }
+
+        if (
+          exercisesData.message ===
+          "You have exceeded the MONTHLY quota for Requests on your current plan, BASIC. Upgrade your plan at https://rapidapi.com/justin-WFnsXH_t6/api/exercisedb"
+        ) {
+          throw "monthly API limit exceeded";
+        } else {
+          setExercises(exercisesData);
+        }
+      } catch (err) {
+        console.error(err);
       }
-
-      setExercises(exercisesData);
     };
 
     fetchExercisesData();
